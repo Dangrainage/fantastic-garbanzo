@@ -1,7 +1,7 @@
 <?php
 // Route for handling login form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-  $username = $_POST['username'];
+  $username = $_POST['admin'];
   $password = $_POST['password'];
 
   // Check if username and password are valid
