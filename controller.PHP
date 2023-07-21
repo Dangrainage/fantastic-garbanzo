@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['signup'])) {
   // Check if passwords match
   if ($password === $confirm_password) {
     // Redirect to home page if sign-up is successful
-    header('Location: /');
+    header('Location: Redditlike.HTML');
     exit;
   } else {
     // Display an error message if passwords don't match
