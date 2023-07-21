@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit test pokusaj</title>
+  </head>
+  <body>
+    <header>
+      <h1>reddddd</h1>
+      <nav>
+        <ul>
+          <li><a href="Redditlike.HTML">Home</a></li>
+          <li><a href="#"></a></li>
+          <li><a href="#"></a></li>
+          <li><a href=""></a></li>
+          <li><a href=""></a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section>
+        <h2>Newest posts</h2>
+        <ul>
+          <li>
+            <a href="Redditlikepost1.HTML">
+              <h3>First post!</h3>
+            </a>
+            <p>Posted by <a href="Redditlikedangrain.HTML">Dangrain</a> at 9:47 7/21/2023</p>
+          </li>
+          <li>
+            <a href="#">
+              <h3>Title of Post 2</h3>
+            </a>
+            <p>Posted by <a href="#">aaaaaaaaaaaaaaa</a></p>
+          </li>
+          <li>
+            <a href="#">
+              <h3>Title of Post 3</h3>
+            </a>
+            <p>Posted by <a href="#">imeeeeee</a>fillertekst za test vremena</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+    <footer>
+      <p></p>
+    </footer>
+  </body>
+</html>
