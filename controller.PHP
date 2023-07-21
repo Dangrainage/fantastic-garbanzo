@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
   // Check if username and password are valid
   if ($username === 'admin' && $password === 'password') {
     // Redirect to home page if login is successful
-    header('Location: /');
+    header('Location: Redditlikepost1.HTML');
     exit;
   } else {
     // Display an error message if login is unsuccessful
