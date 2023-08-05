@@ -2,13 +2,27 @@
 <html>
   <head>
     <title>Redditlike</title>
-   <style>
-     body {
-     background-color:;
-     zoom: 150%
+    <style>
+      body {
+        background-color: ;
+        zoom: 150%;
+      }
 
-    }
-   </style>
+      #video-section {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-top: 56.25%; /* 16:9 aspect ratio (height/width) for responsive video */
+      }
+
+      #reddit-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -18,12 +32,22 @@
           <li><a href="Redditlike.HTML">Home</a></li>
           <li><a href="Redditlikecommics.HTML">Comics</a></li>
           <li><a href="Redditlikeprojects.HTML">Projects</a></li>
-          <li><a href="Redditlikepoetry.HTML"</a>Poetry</li>
-          <a href=""></a>
+          <li><a href="Redditlikepoetry.HTML">Poetry</a></li>
         </ul>
       </nav>
     </header>
     <main>
+      <!-- Video section -->
+      <section id="video-section">
+        <video id="reddit-video" controls>
+          <source src="path/to/your/video.mp4" type="video/mp4">
+          <!-- If you have additional video formats, you can add them as <source> elements here -->
+          <!-- <source src="path/to/your/video.webm" type="video/webm"> -->
+          Your browser does not support the video tag.
+        </video>
+      </section>
+
+      <!-- Rest of the content -->
       <section>
         <h2>Newest posts</h2>
         <ul>
@@ -36,13 +60,12 @@
           <li>
             <a href="Redditlikepost2.HTML">
               <h3>What is this website about?</h3>
-              
             </a>
             <p>Posted by <a href="Redditlikedangrain.HTML">Dangrain</a> at 20:40 7/21/2023</p>
           </li>
           <li>
             <a href="Redditlikepost3.HTML">
-              <h3>Vegetable oil as alternative to diesel</h3>
+              <h3>Vegetable oil as an alternative to diesel</h3>
             </a>
             <p>Posted by <a href="RedditlikeDangrain.HTML">Dangrain</a> at 14:06 8/2/2023</p>
           </li>
