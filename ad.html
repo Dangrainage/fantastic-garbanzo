@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simon Says Game</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  .game-button {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.6;
+  }
+  .green {
+    background-color: green;
+  }
+  .red {
+    background-color: red;
+  }
+  .blue {
+    background-color: blue;
+  }
+  .yellow {
+    background-color: yellow;
+  }
+</style>
+</head>
+<body>
+<div id="game-container">
+  <button class="game-button green" onclick="handleButtonClick('green')"></button>
+  <button class="game-button red" onclick="handleButtonClick('red')"></button>
+  <button class="game-button blue" onclick="handleButtonClick('blue')"></button>
+  <button class="game-button yellow" onclick="handleButtonClick('yellow')"></button>
+</div>
+<script>
+  const buttonColors = ['green', 'red', 'blue', 'yellow'];
+  const gameSequence = [];
+  let playerSequence = [];
+  let round = 0;
+  let isFlashing = false;
+
+  function generateRandomButton() {
+    const randomIndex = Math.floor(Math.random() * buttonColors.length);
+    return buttonColors[randomIndex];
+  }
+
+  async function playSequence() {
+    isFlashing = true;
+    for (const buttonColor of gameSequence) {
+      await flashButton(buttonColor, 500);
+      await sleep(300);
+    }
+    isFlashing = false;
+    playerSequence = []; // Clear player sequence after computer sequence
+  }
+
+  function flashButton(buttonColor, duration) {
+    return new Promise(resolve => {
+      const buttonElement = document.querySelector(`.${buttonColor}`);
+      buttonElement.style.opacity = 1;
+      setTimeout(() => {
+        buttonElement.style.opacity = 0.6;
+        resolve();
+      }, duration);
+    });
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function handleButtonClick(color) {
+    if (!isFlashing) {
+      playerSequence.push(color);
+      flashButton(color, 300);
+
+      if (playerSequence.length === gameSequence.length) {
+        if (JSON.stringify(playerSequence) === JSON.stringify(gameSequence)) {
+          await sleep(500);
+          playRound();
+        } else {
+          alert('Game Over! You made a mistake. Click OK to restart.');
+          resetGame();
+        }
+      }
+    }
+  }
+
+  async function playRound() {
+    const nextButton = generateRandomButton();
+    gameSequence.push(nextButton);
+    await sleep(500);
+    await playSequence();
+  }
+
+  function resetGame() {
+    gameSequence.length = 0;
+    playerSequence.length = 0;
+    round = 0;
+    playRound();
+  }
+
+  playRound(); // Start the game
+</script>
+</body>
+</html>
