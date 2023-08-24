@@ -4,15 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Simon Says Game</title>
-
 <style>
   body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     margin: 0;
     background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
   }
   .game-button {
     width: 100px;
@@ -44,17 +45,10 @@
   <button class="game-button blue" onclick="handleButtonClick('blue')"></button>
   <button class="game-button yellow" onclick="handleButtonClick('yellow')"></button>
 </div>
-
-  <h1> </h1>
-  <h1> </h1>
-  <h1> </h1>
-  
-
-
-  <h1>
-I am going to be frankly pretty honest, ChatGPT helped me a lot with this one.</h1>
-  <h1>I personally didn't know that HTML had this many functions</h1>
-
+<p>
+  <h1>I am going to be frankly pretty honest, ChatGPT helped me a lot with this one.</h1>
+  <h1>I personally didn't really know that HTML has this many functions.</h1>
+</p>
 <script>
   const buttonColors = ['green', 'red', 'blue', 'yellow'];
   const gameSequence = [];
@@ -124,9 +118,6 @@ I am going to be frankly pretty honest, ChatGPT helped me a lot with this one.</
   }
 
   playRound(); // Start the game
-
 </script>
 </body>
 </html>
-
-
