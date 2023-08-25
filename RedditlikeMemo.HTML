@@ -13,7 +13,6 @@
     height: 100vh;
     margin: 0;
     background-color: #fff3b0;
-   
   }
   .game-button {
     width: 100px;
@@ -36,6 +35,12 @@
   .yellow {
     background-color: #b36609;
   }
+  .counter {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+  }
 </style>
 </head>
 <body>
@@ -49,6 +54,7 @@
   <h1>I am going to be frankly pretty honest, ChatGPT helped me a lot with this one.</h1>
   <h1>I personally didn't really know that HTML has this many functions.</h1>
 </p>
+<div class="counter">Round: 0</div>
 <script>
   const buttonColors = ['green', 'red', 'blue', 'yellow'];
   const gameSequence = [];
@@ -93,6 +99,8 @@
 
       if (playerSequence.length === gameSequence.length) {
         if (JSON.stringify(playerSequence) === JSON.stringify(gameSequence)) {
+          round++;
+          updateRoundCounter();
           await sleep(500);
           playRound();
         } else {
@@ -114,7 +122,13 @@
     gameSequence.length = 0;
     playerSequence.length = 0;
     round = 0;
+    updateRoundCounter();
     playRound();
+  }
+
+  function updateRoundCounter() {
+    const counterElement = document.querySelector('.counter');
+    counterElement.textContent = `Round: ${round}`;
   }
 
   playRound(); // Start the game
