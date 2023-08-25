@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DVD Screensaver</title>
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+  }
+  #dvdLogo {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: red;
+  }
+</style>
+</head>
+<body>
+<div id="dvdLogo"></div>
+<script>
+  const logo = document.getElementById('dvdLogo');
+  let x = Math.random() * (window.innerWidth - logo.offsetWidth);
+  let y = Math.random() * (window.innerHeight - logo.offsetHeight);
+  let xSpeed = (Math.random() > 0.5 ? 1 : -1) * 2;
+  let ySpeed = (Math.random() > 0.5 ? 1 : -1) * 2;
+
+  function animate() {
+    x += xSpeed;
+    y += ySpeed;
+
+    if (x + logo.offsetWidth >= window.innerWidth || x <= 0) {
+      xSpeed = -xSpeed;
+      logo.style.backgroundColor = getRandomColor();
+    }
+
+    if (y + logo.offsetHeight >= window.innerHeight || y <= 0) {
+      ySpeed = -ySpeed;
+      logo.style.backgroundColor = getRandomColor();
+    }
+
+    logo.style.transform = `translate(${x}px, ${y}px)`;
+    requestAnimationFrame(animate);
+  }
+
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  animate();
+</script>
+</body>
+</html>
