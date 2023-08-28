@@ -24,6 +24,11 @@
         // Create a WebSocket connection using the Echo Test Service
         const socket = new WebSocket('wss://echo.websocket.org');
 
+        // Handle WebSocket open event
+        socket.addEventListener('open', () => {
+            sendButton.disabled = false; // Enable the send button when the WebSocket is open
+        });
+
         // Handle incoming messages from the server
         socket.addEventListener('message', event => {
             const message = event.data;
@@ -36,11 +41,13 @@
             const message = messageInput.value;
             if (message.trim() === '') return;
 
-            // Send the message to the server
-            socket.send(message);
+            if (socket.readyState === WebSocket.OPEN) {
+                // Send the message to the server
+                socket.send(message);
 
-            // Clear the input field
-            messageInput.value = '';
+                // Clear the input field
+                messageInput.value = '';
+            }
         }
 
         function appendMessageToChatbox(message) {
