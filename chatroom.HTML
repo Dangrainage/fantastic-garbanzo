@@ -5,23 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chatroom</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    #chatbox {
-      width: 400px;
-      height: 300px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      overflow: auto;
-    }
-    #message {
-      width: 100%;
-      padding: 5px;
-    }
-    #send {
-      margin-top: 5px;
-    }
+    /* Your CSS styles here */
   </style>
 </head>
 <body>
@@ -29,23 +13,33 @@
   <input type="text" id="message" placeholder="Type your message">
   <button id="send">Send</button>
 
+  <!-- Include the Socket.io script from a CDN -->
+  <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
+
   <script>
     const chatbox = document.getElementById('chatbox');
     const messageInput = document.getElementById('message');
     const sendButton = document.getElementById('send');
 
-    sendButton.addEventListener('click', () => {
+    // Connect to the Socket.io server
+    const socket = io();
+
+    sendButton.addEventListener('click', function() {
       const message = messageInput.value;
       if (message.trim() !== '') {
-        const messageElement = document.createElement('div');
-        messageElement.textContent = message;
-        chatbox.appendChild(messageElement);
-        chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+        socket.emit('message', message); // Send the message to the server
         messageInput.value = '';
       }
     });
 
-    messageInput.addEventListener('keyup', (event) => {
+    socket.on('message', function(message) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      chatbox.appendChild(messageElement);
+      chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+    });
+
+    messageInput.addEventListener('keyup', function(event) {
       if (event.key === 'Enter') {
         sendButton.click();
       }
