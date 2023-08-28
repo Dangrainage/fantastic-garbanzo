@@ -39,11 +39,17 @@
     sendButton.addEventListener('click', function() {
       const message = messageInput.value;
       if (message.trim() !== '') {
-        messages.push(message);
-        updateChatbox();
+        sendMessage(message);
         messageInput.value = '';
       }
     });
+
+    function sendMessage(message) {
+      // Here, you would typically send the message to your server using an AJAX request
+      // For demonstration purposes, we'll just add the message locally
+      messages.push(message);
+      updateChatbox();
+    }
 
     function updateChatbox() {
       chatbox.innerHTML = messages.map(msg => `<div>${msg}</div>`).join('');
@@ -55,6 +61,21 @@
         sendButton.click();
       }
     });
+
+    // Polling with a 3-second interval
+    setInterval(function() {
+      // Perform an AJAX request to the server to get new messages
+      // Replace the URL with the appropriate endpoint on your server
+      fetch('/getNewMessages')
+        .then(response => response.json())
+        .then(data => {
+          messages = messages.concat(data.messages);
+          updateChatbox();
+        })
+        .catch(error => {
+          console.error('Error fetching new messages:', error);
+        });
+    }, 3000); // 3 seconds interval
   </script>
 </body>
 </html>
