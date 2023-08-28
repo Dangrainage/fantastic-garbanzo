@@ -1,78 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chatroom</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    #chatbox {
-      width: 400px;
-      height: 300px;
-      border: 1px solid #ccc;
-      padding: 10px;
-      overflow: auto;
-    }
-    #message {
-      width: 100%;
-      padding: 5px;
-    }
-    #send {
-      margin-top: 5px;
-    }
-  </style>
+    <title>Chatroom</title>
+    <style>
+        #chatbox {
+            width: 400px;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+        }
+    </style>
 </head>
 <body>
-  <div id="chatbox"></div>
-  <input type="text" id="message" placeholder="Type your message">
-  <button id="send">Send</button>
+    <div id="chatbox"></div>
+    <input type="text" id="message" placeholder="Type your message">
+    <button id="send">Send</button>
 
-  <script>
-    const chatbox = document.getElementById('chatbox');
-    const messageInput = document.getElementById('message');
-    const sendButton = document.getElementById('send');
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
 
-    let messages = [];
+        sendButton.addEventListener('click', sendMessage);
 
-    sendButton.addEventListener('click', function() {
-      const message = messageInput.value;
-      if (message.trim() !== '') {
-        sendMessage(message);
-        messageInput.value = '';
-      }
-    });
+        function sendMessage() {
+            const message = messageInput.value;
+            if (message.trim() === '') return;
 
-    function sendMessage(message) {
-      messages.push(message);
-      updateChatbox();
-    }
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            chatbox.appendChild(messageElement);
 
-    function updateChatbox() {
-      chatbox.innerHTML = messages.map(msg => `<div>${msg}</div>`).join('');
-      chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
-    }
+            // Clear the input field
+            messageInput.value = '';
 
-    messageInput.addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        sendButton.click();
-      }
-    });
-
-    // Polling with a 3-second interval
-    setInterval(function() {
-      // Perform an AJAX request to the server to get new messages
-      fetch('/getNewMessages')
-        .then(response => response.json())
-        .then(data => {
-          messages = messages.concat(data.messages);
-          updateChatbox();
-        })
-        .catch(error => {
-          console.error('Error fetching new messages:', error);
-        });
-    }, 3000); // 3 seconds interval
-  </script>
+            // Scroll to the bottom of the chatbox
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+    </script>
 </body>
 </html>
