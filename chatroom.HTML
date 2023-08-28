@@ -21,8 +21,8 @@
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
 
-        // Create a WebSocket connection using the Echo Test Service
-        const socket = new WebSocket('wss://echo.websocket.org');
+        // Create a WebSocket connection using your WebSocket service's endpoint
+        const socket = new WebSocket('wss://your-websocket-endpoint');
 
         // Handle WebSocket open event
         socket.addEventListener('open', () => {
