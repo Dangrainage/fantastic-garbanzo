@@ -21,18 +21,25 @@
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
 
-        // Create a WebSocket connection using your WebSocket service's endpoint
+        
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=C1ZujiijYNPNj8gvuGXhIPKsDR4WolCCKOBzMdbM&notify_self=1');
 
-        // Handle WebSocket open event
+        
         socket.addEventListener('open', () => {
             sendButton.disabled = false; // Enable the send button when the WebSocket is open
         });
 
-        // Handle incoming messages from the server
+
         socket.addEventListener('message', event => {
             const message = event.data;
             appendMessageToChatbox(message);
+        });
+
+     
+        messageInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
         });
 
         sendButton.addEventListener('click', sendMessage);
