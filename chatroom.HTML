@@ -34,9 +34,7 @@
     const messageInput = document.getElementById('message');
     const sendButton = document.getElementById('send');
 
-    sendButton.addEventListener('click', sendMessage);
-
-    function sendMessage() {
+    sendButton.addEventListener('click', () => {
       const message = messageInput.value;
       if (message.trim() !== '') {
         const messageElement = document.createElement('div');
@@ -45,11 +43,11 @@
         chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
         messageInput.value = '';
       }
-    }
+    });
 
-    messageInput.addEventListener('keyup', function(event) {
+    messageInput.addEventListener('keyup', (event) => {
       if (event.key === 'Enter') {
-        sendMessage();
+        sendButton.click();
       }
     });
   </script>
