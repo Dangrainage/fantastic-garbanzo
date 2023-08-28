@@ -21,18 +21,32 @@
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
 
+        // Create a WebSocket connection
+        const socket = new WebSocket('ws://your-server-url');
+
+        // Handle incoming messages from the server
+        socket.addEventListener('message', event => {
+            const message = event.data;
+            appendMessageToChatbox(message);
+        });
+
         sendButton.addEventListener('click', sendMessage);
 
         function sendMessage() {
             const message = messageInput.value;
             if (message.trim() === '') return;
 
-            const messageElement = document.createElement('div');
-            messageElement.textContent = message;
-            chatbox.appendChild(messageElement);
+            // Send the message to the server
+            socket.send(message);
 
             // Clear the input field
             messageInput.value = '';
+        }
+
+        function appendMessageToChatbox(message) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            chatbox.appendChild(messageElement);
 
             // Scroll to the bottom of the chatbox
             chatbox.scrollTop = chatbox.scrollHeight;
