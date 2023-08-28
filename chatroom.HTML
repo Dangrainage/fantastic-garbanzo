@@ -29,16 +29,13 @@
   <input type="text" id="message" placeholder="Type your message">
   <button id="send">Send</button>
 
-  <!-- Include the Socket.io script from a CDN -->
-  <script src="https://cdn.socket.io/4.0.1/socket.io.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
   <script>
     const chatbox = document.getElementById('chatbox');
     const messageInput = document.getElementById('message');
     const sendButton = document.getElementById('send');
 
-    // Connect to the Socket.io server
-    const socket = io();
+    const socket = io(); // Connect to the Socket.io server
 
     sendButton.addEventListener('click', function() {
       const message = messageInput.value;
