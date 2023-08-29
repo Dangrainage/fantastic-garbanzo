@@ -3,7 +3,6 @@
 <head>
     <link rel="icon" href="Dangrain.ico" type="image/x-icon">
     <title>Chatroom</title>
-    <li><a href="Redditlike.HTML">Home</a></li>
     <style>
         #chatbox {
             width: 1280px;
@@ -15,29 +14,33 @@
 </head>
 <body>
     <div id="chatbox"></div>
+    <input type="text" id="username" placeholder="Your Name">
     <input type="text" id="message" placeholder="Type your message">
     <button id="send">Send</button>
 
     <script>
         const chatbox = document.getElementById('chatbox');
+        const usernameInput = document.getElementById('username');
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
 
         
+        let username = localStorage.getItem('username') || '';
+
+       
+        usernameInput.value = username;
+
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=C1ZujiijYNPNj8gvuGXhIPKsDR4WolCCKOBzMdbM&notify_self=1');
 
-        
         socket.addEventListener('open', () => {
-            sendButton.disabled = false; // Enable the send button when the WebSocket is open
+            sendButton.disabled = false; 
         });
-
 
         socket.addEventListener('message', event => {
             const message = event.data;
             appendMessageToChatbox(message);
         });
 
-     
         messageInput.addEventListener('keydown', event => {
             if (event.key === 'Enter') {
                 sendMessage();
@@ -47,24 +50,40 @@
         sendButton.addEventListener('click', sendMessage);
 
         function sendMessage() {
+            username = usernameInput.value;
+            localStorage.setItem('username', username); 
+            
             const message = messageInput.value;
-            if (message.trim() === '') return;
+            
+            if (username.trim() === '' || message.trim() === '') return;
 
             if (socket.readyState === WebSocket.OPEN) {
-                // Send the message to the server
-                socket.send(message);
+                const data = {
+                    username: username,
+                    message: message
+                };
 
-                // Clear the input field
+                
+                socket.send(JSON.stringify(data));
+
+                
                 messageInput.value = '';
             }
         }
 
-        function appendMessageToChatbox(message) {
+        function appendMessageToChatbox(data) {
             const messageElement = document.createElement('div');
-            messageElement.textContent = message;
+            const usernameElement = document.createElement('strong');
+            
+            const messageData = JSON.parse(data);
+            
+            usernameElement.textContent = messageData.username + ': ';
+            messageElement.textContent = messageData.message;
+
+            messageElement.prepend(usernameElement);
             chatbox.appendChild(messageElement);
 
-            // Scroll to the bottom of the chatbox
+          
             chatbox.scrollTop = chatbox.scrollHeight;
         }
     </script>
