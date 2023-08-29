@@ -2,14 +2,12 @@
 <html>
 <head>
     <link rel="icon" href="Dangrain.ico" type="image/x-icon">
-    <li><a href="Redditlike.HTML">Home</a></li>
     <title>Chatroom</title>
-    
     <style>
         #chatbox {
             width: 1280px;
             height: 720px;
-            border: 10px solid #ccc;
+            border: 1px solid #ccc;
             overflow-y: scroll;
         }
     </style>
@@ -26,13 +24,16 @@
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
 
+        
         let username = localStorage.getItem('username') || '';
+
+       
         usernameInput.value = username;
 
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=C1ZujiijYNPNj8gvuGXhIPKsDR4WolCCKOBzMdbM&notify_self=1');
 
         socket.addEventListener('open', () => {
-            sendButton.disabled = false;
+            sendButton.disabled = false; 
         });
 
         socket.addEventListener('message', event => {
@@ -50,7 +51,8 @@
 
         function sendMessage() {
             username = usernameInput.value;
-            localStorage.setItem('username', username);
+            localStorage.setItem('username', username); 
+            
             const message = messageInput.value;
             
             if (username.trim() === '' || message.trim() === '') return;
@@ -61,7 +63,10 @@
                     message: message
                 };
 
+                
                 socket.send(JSON.stringify(data));
+
+                
                 messageInput.value = '';
             }
         }
@@ -73,23 +78,13 @@
             const messageData = JSON.parse(data);
             
             usernameElement.textContent = messageData.username + ': ';
-            
-            const messageWithLinks = convertURLsToLinks(messageData.message);
-            const messageContentElement = document.createElement('div');
-            messageContentElement.innerHTML = messageWithLinks;
-            
-            messageElement.appendChild(usernameElement);
-            messageElement.appendChild(messageContentElement);
+            messageElement.textContent = messageData.message;
 
+            messageElement.prepend(usernameElement);
             chatbox.appendChild(messageElement);
-            chatbox.scrollTop = chatbox.scrollHeight;
-        }
 
-        function convertURLsToLinks(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, (url) => {
-                return `<a href="${url}" target="_blank">${url}</a>`;
-            });
+          
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
     </script>
 </body>
