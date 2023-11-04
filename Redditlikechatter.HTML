@@ -29,7 +29,7 @@
         let username = localStorage.getItem('username') || '';
         usernameInput.value = username;
 
-        const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=CoVLasz5sJRwJC6jzX1G7xMyQiHkHFVW7XNeAts0&notify_self=1=1');
+        const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=TXpdi6xfTc1u6tqppbKF3SDqQPPllfwCFe8SPIWL&notify_self=1');
 
         socket.addEventListener('open', () => {
             sendButton.disabled = false;
