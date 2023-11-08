@@ -2,7 +2,6 @@
 <html>
 <head>
     <link rel="icon" href="Dangrain.ico" type="image/x-icon">
-    <li><a href="Redditlike.HTML">Home</a></li>
     <title>Chatroom</title>
     
     <style>
@@ -17,35 +16,19 @@
 <body>
     <div id="chatbox"></div>
     <input type="text" id="username" placeholder="Your Name">
+    <input type="file" id="imageInput" accept="image/*">
     <input type="text" id="message" placeholder="Type your message">
-    <input type="file" id="imageUpload" accept="image/*"> <!-- Add an input for image upload -->
     <button id="send">Send</button>
 
     <script>
         const chatbox = document.getElementById('chatbox');
         const usernameInput = document.getElementById('username');
+        const imageInput = document.getElementById('imageInput');
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
-        const imageUpload = document.getElementById('imageUpload');
 
         let username = localStorage.getItem('username') || '';
-        let userImage = localStorage.getItem('userImage') || ''; // Store user image URL
-
         usernameInput.value = username;
-        setImagePreview(userImage); // Set user's image if available
-
-        imageUpload.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    userImage = e.target.result;
-                    setImagePreview(userImage);
-                    localStorage.setItem('userImage', userImage);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
 
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=TXpdi6xfTc1u6tqppbKF3SDqQPPllfwCFe8SPIWL&notify_self=1');
 
@@ -54,8 +37,12 @@
         });
 
         socket.addEventListener('message', event => {
-            const message = event.data;
-            appendMessageToChatbox(message);
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                appendMessageToChatbox(data);
+            } else if (data.image) {
+                appendImageToChatbox(data);
+            }
         });
 
         messageInput.addEventListener('keydown', event => {
@@ -66,19 +53,29 @@
 
         sendButton.addEventListener('click', sendMessage);
 
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageBase64 = e.target.result;
+                    sendImage(imageBase64);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         function sendMessage() {
             username = usernameInput.value;
             localStorage.setItem('username', username);
-
             const message = messageInput.value;
             
-            if (username.trim() === '' || message.trim() === '') return;
+            if (username.trim() === '' || (message.trim() === '' && !imageInput.files[0])) return;
 
             if (socket.readyState === WebSocket.OPEN) {
                 const data = {
                     username: username,
-                    message: message,
-                    userImage: userImage, // Include user image in the message data
+                    message: message
                 };
 
                 socket.send(JSON.stringify(data));
@@ -86,24 +83,30 @@
             }
         }
 
+        function sendImage(imageBase64) {
+            username = usernameInput.value;
+            localStorage.setItem('username', username);
+            
+            if (username.trim() === '' || !imageBase64) return;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                const data = {
+                    username: username,
+                    image: imageBase64
+                };
+
+                socket.send(JSON.stringify(data));
+                imageInput.value = '';
+            }
+        }
+
         function appendMessageToChatbox(data) {
             const messageElement = document.createElement('div');
             const usernameElement = document.createElement('strong');
             
-            const messageData = JSON.parse(data);
-
-            // Display user image if available
-            if (messageData.userImage) {
-                const userImageElement = document.createElement('img');
-                userImageElement.src = messageData.userImage;
-                userImageElement.width = 30;
-                userImageElement.height = 30;
-                messageElement.appendChild(userImageElement);
-            }
-
-            usernameElement.textContent = messageData.username + ': ';
+            usernameElement.textContent = data.username + ': ';
             
-            const messageWithLinks = convertURLsToLinks(messageData.message);
+            const messageWithLinks = convertURLsToLinks(data.message);
             const messageContentElement = document.createElement('div');
             messageContentElement.innerHTML = messageWithLinks;
             
@@ -114,23 +117,12 @@
             chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-        function setImagePreview(imageUrl) {
-            const imagePreview = document.getElementById('imagePreview');
-            if (imageUrl) {
-                if (!imagePreview) {
-                    const preview = document.createElement('img');
-                    preview.id = 'imagePreview';
-                    preview.src = imageUrl;
-                    preview.width = 30;
-                    preview.height = 30;
-                    // Insert the image preview after the username input
-                    usernameInput.parentNode.insertBefore(preview, usernameInput.nextSibling);
-                } else {
-                    imagePreview.src = imageUrl;
-                }
-            } else if (imagePreview) {
-                imagePreview.parentNode.removeChild(imagePreview);
-            }
+        function appendImageToChatbox(data) {
+            const imageElement = document.createElement('img');
+            imageElement.src = data.image;
+            
+            chatbox.appendChild(imageElement);
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
 
         function convertURLsToLinks(text) {
