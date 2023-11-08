@@ -123,7 +123,8 @@
                     preview.src = imageUrl;
                     preview.width = 30;
                     preview.height = 30;
-                    usernameInput.parentNode.insertBefore(preview, usernameInput);
+                    // Insert the image preview after the username input
+                    usernameInput.parentNode.insertBefore(preview, usernameInput.nextSibling);
                 } else {
                     imagePreview.src = imageUrl;
                 }
