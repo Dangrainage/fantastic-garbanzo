@@ -18,6 +18,7 @@
     <div id="chatbox"></div>
     <input type="text" id="username" placeholder="Your Name">
     <input type="text" id="message" placeholder="Type your message">
+    <input type="file" id="imageUpload" accept="image/*"> <!-- Add an input for image upload -->
     <button id="send">Send</button>
 
     <script>
@@ -25,9 +26,26 @@
         const usernameInput = document.getElementById('username');
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
+        const imageUpload = document.getElementById('imageUpload');
 
         let username = localStorage.getItem('username') || '';
+        let userImage = localStorage.getItem('userImage') || ''; // Store user image URL
+
         usernameInput.value = username;
+        setImagePreview(userImage); // Set user's image if available
+
+        imageUpload.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    userImage = e.target.result;
+                    setImagePreview(userImage);
+                    localStorage.setItem('userImage', userImage);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=TXpdi6xfTc1u6tqppbKF3SDqQPPllfwCFe8SPIWL&notify_self=1');
 
@@ -51,6 +69,7 @@
         function sendMessage() {
             username = usernameInput.value;
             localStorage.setItem('username', username);
+
             const message = messageInput.value;
             
             if (username.trim() === '' || message.trim() === '') return;
@@ -58,7 +77,8 @@
             if (socket.readyState === WebSocket.OPEN) {
                 const data = {
                     username: username,
-                    message: message
+                    message: message,
+                    userImage: userImage, // Include user image in the message data
                 };
 
                 socket.send(JSON.stringify(data));
@@ -71,7 +91,16 @@
             const usernameElement = document.createElement('strong');
             
             const messageData = JSON.parse(data);
-            
+
+            // Display user image if available
+            if (messageData.userImage) {
+                const userImageElement = document.createElement('img');
+                userImageElement.src = messageData.userImage;
+                userImageElement.width = 30;
+                userImageElement.height = 30;
+                messageElement.appendChild(userImageElement);
+            }
+
             usernameElement.textContent = messageData.username + ': ';
             
             const messageWithLinks = convertURLsToLinks(messageData.message);
@@ -83,6 +112,24 @@
 
             chatbox.appendChild(messageElement);
             chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function setImagePreview(imageUrl) {
+            const imagePreview = document.getElementById('imagePreview');
+            if (imageUrl) {
+                if (!imagePreview) {
+                    const preview = document.createElement('img');
+                    preview.id = 'imagePreview';
+                    preview.src = imageUrl;
+                    preview.width = 30;
+                    preview.height = 30;
+                    usernameInput.parentNode.insertBefore(preview, usernameInput);
+                } else {
+                    imagePreview.src = imageUrl;
+                }
+            } else if (imagePreview) {
+                imagePreview.parentNode.removeChild(imagePreview);
+            }
         }
 
         function convertURLsToLinks(text) {
