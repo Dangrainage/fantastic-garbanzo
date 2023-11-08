@@ -18,6 +18,7 @@
     <div id="chatbox"></div>
     <input type="text" id="username" placeholder="Your Name">
     <input type="text" id="message" placeholder="Type your message">
+    <input type="file" id="imageUpload" accept="image/*">
     <button id="send">Send</button>
 
     <script>
@@ -25,9 +26,16 @@
         const usernameInput = document.getElementById('username');
         const messageInput = document.getElementById('message');
         const sendButton = document.getElementById('send');
+        const imageUpload = document.getElementById('imageUpload');
 
         let username = localStorage.getItem('username') || '';
+        let userImage = localStorage.getItem('userImage') || '';
+
         usernameInput.value = username;
+        if (userImage) {
+            // If there's a userImage in local storage, display it.
+            displayUserImage(userImage);
+        }
 
         const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=TXpdi6xfTc1u6tqppbKF3SDqQPPllfwCFe8SPIWL&notify_self=1');
 
@@ -48,6 +56,20 @@
 
         sendButton.addEventListener('click', sendMessage);
 
+        imageUpload.addEventListener('change', () => {
+            const file = imageUpload.files[0];
+            if (file) {
+                // Read the image as a Data URL and store it in local storage.
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    userImage = e.target.result;
+                    localStorage.setItem('userImage', userImage);
+                    displayUserImage(userImage);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         function sendMessage() {
             username = usernameInput.value;
             localStorage.setItem('username', username);
@@ -58,7 +80,8 @@
             if (socket.readyState === WebSocket.OPEN) {
                 const data = {
                     username: username,
-                    message: message
+                    message: message,
+                    userImage: userImage
                 };
 
                 socket.send(JSON.stringify(data));
@@ -72,6 +95,14 @@
             
             const messageData = JSON.parse(data);
             
+            if (messageData.userImage) {
+                // Display user's image before their username.
+                const userImageElement = document.createElement('img');
+                userImageElement.src = messageData.userImage;
+                userImageElement.width = 30; // Set your preferred image size here
+                messageElement.appendChild(userImageElement);
+            }
+
             usernameElement.textContent = messageData.username + ': ';
             
             const messageWithLinks = convertURLsToLinks(messageData.message);
@@ -90,6 +121,14 @@
             return text.replace(urlRegex, (url) => {
                 return `<a href="${url}" target="_blank">${url}</a>`;
             });
+        }
+
+        function displayUserImage(userImage) {
+            // Create an image element and append it to the username input box.
+            const imageElement = document.createElement('img');
+            imageElement.src = userImage;
+            imageElement.width = 30; // Set your preferred image size here
+            usernameInput.parentNode.insertBefore(imageElement, usernameInput);
         }
     </script>
 </body>
