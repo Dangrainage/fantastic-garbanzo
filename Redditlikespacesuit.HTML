@@ -53,11 +53,11 @@
     const invaders = [];
     const invaderWidth = 30;
     const invaderHeight = 30;
-    const maxInvaders = 2;
+    const maxInvaders = 4;
 
     let failedCount = 0;
     let score = 0;
-    let highestScore = 0;
+    let highestScore = localStorage.getItem("highestScore") || 0;
 
     const leftArrowButton = document.getElementById("left-arrow");
     const rightArrowButton = document.getElementById("right-arrow");
@@ -186,6 +186,7 @@
             alert("You failed, try again");
             if (score > highestScore) {
               highestScore = score;
+              localStorage.setItem("highestScore", highestScore);
               highestScoreDisplay.textContent = highestScore;
             }
             document.location.reload();
@@ -202,6 +203,7 @@
       requestAnimationFrame(updateGameArea);
     }
 
+    highestScoreDisplay.textContent = highestScore;
     updateGameArea();
   </script>
 </body>
