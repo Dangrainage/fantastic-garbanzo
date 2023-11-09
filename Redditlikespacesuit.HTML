@@ -15,10 +15,13 @@
       font-size: 20px;
     }
     .control-button {
-      margin: 0 15px;
+      margin: 0 20px;
       cursor: pointer;
-      width: 50px; /* Increased button size */
+    }
+    #score {
       text-align: center;
+      font-size: 24px;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -29,6 +32,7 @@
     <div class="control-button" id="shoot-button">!</div>
     <div class="control-button" id="right-arrow">&gt;</div>
   </div>
+  <div id="score">Score: <span id="score-value">0</span> | Highest Score: <span id="highest-score">0</span></div>
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -38,9 +42,9 @@
       y: canvas.height - 30,
       width: 30,
       height: 30,
-      speed: 6,
-      isMovingLeft: false,
-      isMovingRight: false,
+      speed: 8,
+      movingLeft: false,
+      movingRight: false,
     };
 
     const bullets = [];
@@ -52,34 +56,61 @@
     const maxInvaders = 2;
 
     let failedCount = 0;
+    let score = 0;
+    let highestScore = 0;
 
     const leftArrowButton = document.getElementById("left-arrow");
     const rightArrowButton = document.getElementById("right-arrow");
     const shootButton = document.getElementById("shoot-button");
+    const scoreDisplay = document.getElementById("score-value");
+    const highestScoreDisplay = document.getElementById("highest-score");
 
-    leftArrowButton.addEventListener("mousedown", () => (player.isMovingLeft = true));
-    leftArrowButton.addEventListener("mouseup", () => (player.isMovingLeft = false));
-    rightArrowButton.addEventListener("mousedown", () => (player.isMovingRight = true));
-    rightArrowButton.addEventListener("mouseup", () => (player.isMovingRight = false));
-    shootButton.addEventListener("click", () => shoot());
+    leftArrowButton.addEventListener("mousedown", () => startMoveLeft());
+    leftArrowButton.addEventListener("mouseup", () => stopMoveLeft());
+    leftArrowButton.addEventListener("touchstart", () => startMoveLeft());
+    leftArrowButton.addEventListener("touchend", () => stopMoveLeft());
 
-    function shoot() {
-      bullets.push({ x: player.x + player.width / 2, y: player.y });
-    }
+    rightArrowButton.addEventListener("mousedown", () => startMoveRight());
+    rightArrowButton.addEventListener("mouseup", () => stopMoveRight());
+    rightArrowButton.addEventListener("touchstart", () => startMoveRight());
+    rightArrowButton.addEventListener("touchend", () => stopMoveRight());
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === " ") {
+      if (event.key === "ArrowLeft") {
+        startMoveLeft();
+      } else if (event.key === "ArrowRight") {
+        startMoveRight();
+      } else if (event.key === " ") {
         shoot();
       }
     });
 
-    function movePlayer() {
-      if (player.isMovingLeft && player.x > 0) {
-        player.x -= player.speed;
+    document.addEventListener("keyup", (event) => {
+      if (event.key === "ArrowLeft") {
+        stopMoveLeft();
+      } else if (event.key === "ArrowRight") {
+        stopMoveRight();
       }
-      if (player.isMovingRight && player.x < canvas.width - player.width) {
-        player.x += player.speed;
-      }
+    });
+
+    function startMoveLeft() {
+      player.movingLeft = true;
+    }
+
+    function stopMoveLeft() {
+      player.movingLeft = false;
+    }
+
+    function startMoveRight() {
+      player.movingRight = true;
+    }
+
+    function stopMoveRight() {
+      player.movingRight = false;
+    }
+
+    function shoot() {
+      bullets.push({ x: player.x + player.width / 2, y: player.y });
     }
 
     function drawPlayer() {
@@ -101,7 +132,15 @@
 
     function updateGameArea() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      movePlayer();
+
+      if (player.movingLeft && player.x > 0) {
+        player.x -= player.speed;
+      }
+
+      if (player.movingRight && player.x < canvas.width - player.width) {
+        player.x += player.speed;
+      }
+
       drawPlayer();
 
       for (let i = bullets.length - 1; i >= 0; i--) {
@@ -132,6 +171,7 @@
           ) {
             bullets.splice(j, 1);
             invaders.splice(i, 1);
+            score++;
           }
         }
 
@@ -144,6 +184,10 @@
           failedCount++;
           if (failedCount >= 3) {
             alert("You failed, try again");
+            if (score > highestScore) {
+              highestScore = score;
+              highestScoreDisplay.textContent = highestScore;
+            }
             document.location.reload();
           }
           invaders.splice(i, 1);
@@ -154,6 +198,7 @@
         }
       }
 
+      scoreDisplay.textContent = score;
       requestAnimationFrame(updateGameArea);
     }
 
