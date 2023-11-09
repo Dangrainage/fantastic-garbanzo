@@ -8,10 +8,27 @@
       display: block;
       margin: 0 auto;
     }
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+      font-size: 20px;
+    }
+    .control-button {
+      margin: 0 15px;
+      cursor: pointer;
+      width: 50px; /* Increased button size */
+      text-align: center;
+    }
   </style>
 </head>
 <body>
   <canvas id="gameCanvas" width="600" height="400"></canvas>
+  <div class="controls">
+    <div class="control-button" id="left-arrow">&lt;</div>
+    <div class="control-button" id="shoot-button">!</div>
+    <div class="control-button" id="right-arrow">&gt;</div>
+  </div>
   <script>
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -21,7 +38,9 @@
       y: canvas.height - 30,
       width: 30,
       height: 30,
-      speed: 8, // Increased player speed
+      speed: 6,
+      isMovingLeft: false,
+      isMovingRight: false,
     };
 
     const bullets = [];
@@ -34,15 +53,34 @@
 
     let failedCount = 0;
 
+    const leftArrowButton = document.getElementById("left-arrow");
+    const rightArrowButton = document.getElementById("right-arrow");
+    const shootButton = document.getElementById("shoot-button");
+
+    leftArrowButton.addEventListener("mousedown", () => (player.isMovingLeft = true));
+    leftArrowButton.addEventListener("mouseup", () => (player.isMovingLeft = false));
+    rightArrowButton.addEventListener("mousedown", () => (player.isMovingRight = true));
+    rightArrowButton.addEventListener("mouseup", () => (player.isMovingRight = false));
+    shootButton.addEventListener("click", () => shoot());
+
+    function shoot() {
+      bullets.push({ x: player.x + player.width / 2, y: player.y });
+    }
+
     document.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowLeft" && player.x > 0) {
-        player.x -= player.speed;
-      } else if (event.key === "ArrowRight" && player.x < canvas.width - player.width) {
-        player.x += player.speed;
-      } else if (event.key === " ") {
-        bullets.push({ x: player.x + player.width / 2, y: player.y });
+      if (event.key === " ") {
+        shoot();
       }
     });
+
+    function movePlayer() {
+      if (player.isMovingLeft && player.x > 0) {
+        player.x -= player.speed;
+      }
+      if (player.isMovingRight && player.x < canvas.width - player.width) {
+        player.x += player.speed;
+      }
+    }
 
     function drawPlayer() {
       ctx.fillStyle = "blue";
@@ -63,6 +101,7 @@
 
     function updateGameArea() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      movePlayer();
       drawPlayer();
 
       for (let i = bullets.length - 1; i >= 0; i--) {
@@ -70,24 +109,20 @@
         bullet.y -= bulletSpeed;
         drawBullet(bullet);
 
-        // Remove bullets when they go out of the canvas
         if (bullet.y < 0) {
           bullets.splice(i, 1);
         }
       }
 
-      // Spawn new invaders
       if (Math.random() < 0.02 && invaders.length < maxInvaders) {
         invaders.push({ x: Math.random() * (canvas.width - invaderWidth), y: 0 });
       }
 
-      // Move and draw invaders
       for (let i = invaders.length - 1; i >= 0; i--) {
         const invader = invaders[i];
         invader.y += 1;
         drawInvaders();
 
-        // Check for bullet-invader collisions
         for (let j = bullets.length - 1; j >= 0; j--) {
           if (
             bullets[j].x < invader.x + invaderWidth &&
@@ -100,7 +135,6 @@
           }
         }
 
-        // Check for player-invader collisions
         if (
           player.x < invader.x + invaderWidth &&
           player.x + player.width > invader.x &&
@@ -115,7 +149,6 @@
           invaders.splice(i, 1);
         }
 
-        // Check if an invader is off the screen
         if (invader.y > canvas.height) {
           invaders.splice(i, 1);
         }
