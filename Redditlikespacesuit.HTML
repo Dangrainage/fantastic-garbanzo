@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Space Invaders</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="600" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const player = {
+      x: canvas.width / 2,
+      y: canvas.height - 30,
+      width: 30,
+      height: 30,
+      speed: 8, // Increased player speed
+    };
+
+    const bullets = [];
+    const bulletSpeed = 5;
+
+    const invaders = [];
+    const invaderWidth = 30;
+    const invaderHeight = 30;
+    const maxInvaders = 2;
+
+    let failedCount = 0;
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" && player.x > 0) {
+        player.x -= player.speed;
+      } else if (event.key === "ArrowRight" && player.x < canvas.width - player.width) {
+        player.x += player.speed;
+      } else if (event.key === " ") {
+        bullets.push({ x: player.x + player.width / 2, y: player.y });
+      }
+    });
+
+    function drawPlayer() {
+      ctx.fillStyle = "blue";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawBullet(bullet) {
+      ctx.fillStyle = "red";
+      ctx.fillRect(bullet.x, bullet.y, 2, 10);
+    }
+
+    function drawInvaders() {
+      ctx.fillStyle = "green";
+      for (const invader of invaders) {
+        ctx.fillRect(invader.x, invader.y, invaderWidth, invaderHeight);
+      }
+    }
+
+    function updateGameArea() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const bullet = bullets[i];
+        bullet.y -= bulletSpeed;
+        drawBullet(bullet);
+
+        // Remove bullets when they go out of the canvas
+        if (bullet.y < 0) {
+          bullets.splice(i, 1);
+        }
+      }
+
+      // Spawn new invaders
+      if (Math.random() < 0.02 && invaders.length < maxInvaders) {
+        invaders.push({ x: Math.random() * (canvas.width - invaderWidth), y: 0 });
+      }
+
+      // Move and draw invaders
+      for (let i = invaders.length - 1; i >= 0; i--) {
+        const invader = invaders[i];
+        invader.y += 1;
+        drawInvaders();
+
+        // Check for bullet-invader collisions
+        for (let j = bullets.length - 1; j >= 0; j--) {
+          if (
+            bullets[j].x < invader.x + invaderWidth &&
+            bullets[j].x + 2 > invader.x &&
+            bullets[j].y < invader.y + invaderHeight &&
+            bullets[j].y + 10 > invader.y
+          ) {
+            bullets.splice(j, 1);
+            invaders.splice(i, 1);
+          }
+        }
+
+        // Check for player-invader collisions
+        if (
+          player.x < invader.x + invaderWidth &&
+          player.x + player.width > invader.x &&
+          player.y < invader.y + invaderHeight &&
+          player.y + player.height > invader.y
+        ) {
+          failedCount++;
+          if (failedCount >= 3) {
+            alert("You failed, try again");
+            document.location.reload();
+          }
+          invaders.splice(i, 1);
+        }
+
+        // Check if an invader is off the screen
+        if (invader.y > canvas.height) {
+          invaders.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(updateGameArea);
+    }
+
+    updateGameArea();
+  </script>
+</body>
+</html>
