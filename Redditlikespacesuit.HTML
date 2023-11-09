@@ -13,10 +13,10 @@
       display: flex;
       justify-content: center;
       margin-top: 10px;
-      font-size: 70px; /* Increased font size for larger buttons */
+      font-size: 24px;
     }
     .control-button {
-      margin: 0 30px; /* Increased margin to make buttons larger */
+      margin: 0 30px;
       cursor: pointer;
     }
     #score {
@@ -30,7 +30,7 @@
   <canvas id="gameCanvas" width="600" height="400"></canvas>
   <div class="controls">
     <div class="control-button" id="left-arrow">&lt;</div>
-    <div class="control-button" id="shoot-button">!</div>
+    <div class="control-button" id="shoot-button" ontouchstart="shoot()">!</div>
     <div class="control-button" id="right-arrow">&gt;</div>
   </div>
   <div id="score">Score: <span id="score-value">0</span> | Highest Score: <span id="highest-score">0</span></div>
