@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitt</title>
-    <h1>Use this as you would Twitter, oh, sorry  X</h1>
+    <title>Anonymous Twitter</title>
 </head>
 <body>
     <div>
-        <h2>Post a Bitt</h2>
+        <h2>Post a Tweet</h2>
         <textarea id="tweetInput" rows="4" cols="50"></textarea>
         <br>
         <button onclick="postTweet()">Post</button>
     </div>
 
     <div>
-        <h2>Bitters</h2>
+        <h2>Tweets</h2>
         <ul id="tweetList"></ul>
     </div>
 
@@ -31,7 +30,10 @@
         function fetchTweets() {
             fetch(githubApiUrl)
                 .then(response => response.json())
-                .then(files => {
+                .then(responseData => {
+                    // Check if responseData is an array
+                    const files = Array.isArray(responseData) ? responseData : [];
+
                     const tweetFiles = files
                         .filter(file => file.name.endsWith('.json'))
                         .sort((a, b) => b.name.localeCompare(a.name)); // Sort by filename in descending order
