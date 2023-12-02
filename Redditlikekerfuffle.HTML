@@ -2,28 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="Dangrain.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitter(twitter clone)</title>
-    <h1>Use this as you would Twitter, oh, sorry X, lol</h1>
+    <title>Anonymous Twitter</title>
 </head>
 <body>
     <div>
-        <h2>Post a Bitter</h2>
-        <textarea id="tweetInput" rows="1" cols="50"></textarea>
+        <h2>Post a Tweet</h2>
+        <textarea id="tweetInput" rows="4" cols="50"></textarea>
         <br>
         <button onclick="postTweet()">Post</button>
     </div>
 
     <div>
-        <h2>Bitters</h2>
+        <h2>Tweets</h2>
         <ul id="tweetList"></ul>
     </div>
 
     <script>
         const username = 'Dangrainage';
         const repo = 'Urban';
-        const token = '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';
+        const token = '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';
 
         // GitHub API endpoint
         const githubApiUrl = `https://api.github.com/repos/${username}/${repo}/contents/`;
@@ -32,13 +30,8 @@
         function fetchTweets() {
             fetch(githubApiUrl)
                 .then(response => response.json())
-                .then(responseData => {
-                    // Check if responseData is an array
-                    const files = Array.isArray(responseData) ? responseData : [];
-
-                    const tweetFiles = files
-                        .filter(file => file.name.endsWith('.json'))
-                        .sort((a, b) => b.name.localeCompare(a.name)); // Sort by filename in descending order
+                .then(files => {
+                    const tweetFiles = files.filter(file => file.name.endsWith('.json'));
 
                     // Display tweets
                     displayTweets(tweetFiles);
@@ -68,7 +61,6 @@
                     })
                     .catch(error => console.error('Error fetching tweet content:', error));
 
-                // Append the tweet to the list
                 tweetList.appendChild(listItem);
             });
         }
@@ -79,8 +71,7 @@
             const tweetText = tweetInput.value;
 
             if (tweetText.trim() !== '') {
-                const timestamp = Date.now();
-                const fileName = `tweet_${timestamp}.json`;
+                const fileName = `tweet_${Date.now()}.json`;
                 const fileContent = JSON.stringify({ text: tweetText }, null, 2);
 
                 // Create a new tweet file
