@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search</title>
+</head>
+<body>
+    <h1>Movie Search</h1>
+    <form id="searchForm">
+        <label for="movieName">Enter Movie Name:</label><br>
+        <input type="text" id="movieName" name="movieName"><br><br>
+        <button type="submit">Search</button>
+    </form>
+    <div id="searchResults"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            let movieName = document.getElementById('movieName').value.trim();
+            if (movieName === '') {
+                alert('Please enter a movie name.');
+                return;
+            }
+            fetch(`https://filmer.anorak.top/api/search?search_query=${encodeURIComponent(movieName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayResults(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        function displayResults(results) {
+            let searchResultsDiv = document.getElementById('searchResults');
+            searchResultsDiv.innerHTML = '';
+            if (results.length === 0) {
+                searchResultsDiv.textContent = 'No results found.';
+            } else {
+                let resultList = document.createElement('ul');
+                results.forEach(result => {
+                    let listItem = document.createElement('li');
+                    listItem.textContent = result;
+                    resultList.appendChild(listItem);
+                });
+                searchResultsDiv.appendChild(resultList);
+            }
+        }
+    </script>
+</body>
+</html>
