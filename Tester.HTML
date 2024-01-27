@@ -22,7 +22,7 @@
                 alert('Please enter a movie name.');
                 return;
             }
-            fetch(`https://filmer.anorak.top/api/search?search_query=${encodeURIComponent(movieName)}`)
+            fetch(`https://filmer.anorak01.top/api/search?search_query=${encodeURIComponent(movieName)}`)
                 .then(response => response.json())
                 .then(data => {
                     displayResults(data);
