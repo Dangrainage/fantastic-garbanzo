@@ -29,7 +29,7 @@
         let username = localStorage.getItem('username') || '';
         usernameInput.value = username;
 
-        const socket = new WebSocket('https://js.pusher.com/8.2.0/pusher.min.js');
+        const socket = new WebSocket('wss://ws.postman-echo.com/raw');
 
         socket.addEventListener('open', () => {
             sendButton.disabled = false;
