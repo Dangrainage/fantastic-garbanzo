@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convert Dollars to Gumballs</title>
+</head>
+<body>
+    <h1>Dollars to Gumballs Converter</h1>
+    <label for="dollars">Enter the amount in US dollars:</label>
+    <input type="number" id="dollars" name="dollars">
+    <button onclick="convertToGumballs()">Convert</button>
+    <p id="result"></p>
+
+    <script>
+        function convertToGumballs() {
+            var dollars = parseFloat(document.getElementById("dollars").value);
+            var gumballPrice = 0.04;
+            var resultInGumballs = dollars / gumballPrice;
+            document.getElementById("result").innerHTML = "Your amount is worth " + resultInGumballs + " in gumballs.";
+        }
+    </script>
+    <h1>Originally a python script to mess around with my friends, Is now a calculator on the website</h1>
+    <h1>Thank ChatGPT for this nice JavaScript integration, since I understand basically nothing</h1>
+</body>
+</html>
