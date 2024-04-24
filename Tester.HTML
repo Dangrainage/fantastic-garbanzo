@@ -43,10 +43,16 @@
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
-                    link.href = result.link; // Assuming there's a 'link' property in the dictionary
+                    if (result.link) { // Check if 'link' property is defined
+                        link.href = result.link; // Set link if available
+                    } else {
+                        link.href = '#'; // Set to '#' if link is not available
+                    }
                     link.onclick = function(event) {
                         event.preventDefault(); // Prevent default link behavior
-                        window.location.href = result.link; // Redirect to the movie page
+                        if (result.link) { // Only redirect if 'link' is defined
+                            window.location.href = result.link; // Redirect to the movie page
+                        }
                     };
                     listItem.appendChild(link);
                     resultList.appendChild(listItem);
