@@ -44,9 +44,9 @@
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
                     link.href = result.link ? result.link : '#'; // If link is not available, set href to '#'
-                    link.onclick = function(event) {
-                        if (!result.link) {
-                            event.preventDefault(); // Prevent default link behavior if link is not available
+                    link.onclick = function() {
+                        if (result.link) {
+                            window.location.href = result.link;
                         }
                     };
                     listItem.appendChild(link);
