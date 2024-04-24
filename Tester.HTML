@@ -43,15 +43,10 @@
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
-                    if (result.link) { // Check if 'link' property is defined
-                        link.href = result.link; // Set link if available
-                    } else {
-                        link.href = '#'; // Set to '#' if link is not available
-                    }
+                    link.href = result.link ? result.link : '#'; // If link is not available, set href to '#'
                     link.onclick = function(event) {
-                        event.preventDefault(); // Prevent default link behavior
-                        if (result.link) { // Only redirect if 'link' is defined
-                            window.location.href = result.link; // Redirect to the movie page
+                        if (!result.link) {
+                            event.preventDefault(); // Prevent default link behavior if link is not available
                         }
                     };
                     listItem.appendChild(link);
