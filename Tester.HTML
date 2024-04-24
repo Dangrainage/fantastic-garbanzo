@@ -43,28 +43,16 @@
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
-                    link.href = '#'; // Set href to '#' to prevent default link behavior
-                    link.onclick = function() { // Add onclick event to fetch movie page
-                        fetchMoviePage(result.link); // Assuming there's a 'link' property in the dictionary
+                    link.href = result.link; // Assuming there's a 'link' property in the dictionary
+                    link.onclick = function(event) {
+                        event.preventDefault(); // Prevent default link behavior
+                        window.location.href = result.link; // Redirect to the movie page
                     };
                     listItem.appendChild(link);
                     resultList.appendChild(listItem);
                 });
                 searchResultsDiv.appendChild(resultList);
             }
-        }
-
-        function fetchMoviePage(movieLink) {
-            fetch(movieLink)
-                .then(response => response.text())
-                .then(html => {
-                    // Assuming you want to display the fetched HTML content in a new window
-                    let newWindow = window.open();
-                    newWindow.document.write(html);
-                })
-                .catch(error => {
-                    console.error('Error fetching movie page:', error);
-                });
         }
     </script>
 </body>
