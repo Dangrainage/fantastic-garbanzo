@@ -38,14 +38,17 @@
             if (results.length === 0) {
                 searchResultsDiv.textContent = 'No results found.';
             } else {
+                let resultList = document.createElement('ul');
                 results.forEach(result => {
+                    let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
-                    link.href = result.link;
-                    link.style.display = 'block';
-                    link.style.marginBottom = '10px';
-                    searchResultsDiv.appendChild(link);
+                    link.href = result.link; // Assuming there's a 'link' property in the dictionary
+                    link.target = '_blank'; // Open link in a new tab
+                    listItem.appendChild(link);
+                    resultList.appendChild(listItem);
                 });
+                searchResultsDiv.appendChild(resultList);
             }
         }
     </script>
