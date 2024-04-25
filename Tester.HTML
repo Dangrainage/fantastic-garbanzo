@@ -38,22 +38,14 @@
             if (results.length === 0) {
                 searchResultsDiv.textContent = 'No results found.';
             } else {
-                let resultList = document.createElement('ul');
                 results.forEach(result => {
-                    let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
-                    link.href = result.link ? result.link : '#'; // If link is not available, set href to '#'
-                    link.onclick = function() {
-                        if (result.link) {
-                            window.location.href = result.link;
-                        }
-                    };
-                    console.log("Link:", result.link); // Log link to console for debugging
-                    listItem.appendChild(link);
-                    resultList.appendChild(listItem);
+                    link.href = result.link;
+                    link.style.display = 'block';
+                    link.style.marginBottom = '10px';
+                    searchResultsDiv.appendChild(link);
                 });
-                searchResultsDiv.appendChild(resultList);
             }
         }
     </script>
