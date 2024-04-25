@@ -56,18 +56,22 @@
         }
 
         function generateDynamic(href) {
-            fetch(`https://filmer.anorak01.top/vid/${href.split("//")[1]}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.url) {
-                        window.location.href = data.url; // Redirect to the generated link
-                    } else {
-                        console.error('Error: Unable to fetch video link');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            if (href) {
+                fetch(`https://filmer.anorak01.top/vid/${href.split("//")[1]}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.url) {
+                            window.location.href = data.url; // Redirect to the generated link
+                        } else {
+                            console.error('Error: Unable to fetch video link');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                console.error('Error: No valid link provided');
+            }
         }
     </script>
 </body>
