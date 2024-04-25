@@ -40,6 +40,7 @@
             } else {
                 let resultList = document.createElement('ul');
                 results.forEach(result => {
+                    console.log('Result:', result); // Log the result object
                     let listItem = document.createElement('li');
                     let link = document.createElement('a');
                     link.textContent = `${result.title} (${result.year})`;
