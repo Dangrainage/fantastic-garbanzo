@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="Dangrain.ico" type="image/x-icon">
+    <title>Chatroom</title>
+    
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            background-color: #36393f;
+            color: #dcddde;
+        }
+
+        /* Chat container */
+        #chat-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+            height: 85vh;
+            border: 1px solid #202225;
+            background-color: #2f3136;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Chatbox area */
+        #chatbox {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+        }
+
+        /* Message styling */
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .message.sender {
+            align-self: flex-start;
+            background-color: #3a3c42;
+            border-radius: 8px 8px 8px 0;
+            padding: 8px;
+            margin-left: 5px;
+        }
+
+        .message.receiver {
+            align-self: flex-end;
+            background-color: #5865f2;
+            color: white;
+            border-radius: 8px 8px 0 8px;
+            padding: 8px;
+            margin-right: 5px;
+        }
+
+        .username {
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: #b9bbbe;
+        }
+
+        .timestamp {
+            font-size: 0.75em;
+            color: #72767d;
+            align-self: flex-end;
+        }
+
+        /* Input area styling */
+        #input-area {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background-color: #40444b;
+            border-top: 1px solid #202225;
+            gap: 5px;
+        }
+
+        #username, #message {
+            width: 100%;
+            padding: 8px;
+            font-size: 1em;
+            border: 1px solid #202225;
+            border-radius: 5px;
+            background-color: #202225;
+            color: white;
+        }
+
+        #send {
+            padding: 10px;
+            font-size: 1em;
+            background-color: #7289da;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #send:disabled {
+            background-color: #72767d;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            #input-area {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            #username {
+                flex: 1;
+                margin-right: 5px;
+            }
+
+            #message {
+                flex: 3;
+                margin-right: 5px;
+            }
+
+            #send {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chatbox"></div>
+        <div id="input-area">
+            <input type="text" id="username" placeholder="Your Name">
+            <input type="text" id="message" placeholder="Type your message">
+            <button id="send">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const usernameInput = document.getElementById('username');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+
+        // Load username from local storage
+        let username = localStorage.getItem('username') || '';
+        usernameInput.value = username;
+
+        // Load previous messages from local storage
+        const messages = JSON.parse(localStorage.getItem('messages')) || [];
+        messages.forEach(appendMessageToChatbox);
+
+        // WebSocket connection
+        const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=gyBmNIxpOACNKSbRoLZWYucpBQ5LsYhkf5CqaNBv&notify_self=1');
+
+        socket.addEventListener('open', () => {
+            sendButton.disabled = false;
+        });
+
+        socket.addEventListener('message', event => {
+            const message = event.data;
+            appendMessageToChatbox(message);
+            saveMessage(message);
+        });
+
+        // Send message on Enter key or button click
+        messageInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        function sendMessage() {
+            username = usernameInput.value;
+            localStorage.setItem('username', username);
+            const message = messageInput.value;
+
+            if (username.trim() === '' || message.trim() === '') return;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                const data = {
+                    username: username,
+                    message: message,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+
+                const messageJSON = JSON.stringify(data);
+                socket.send(messageJSON);
+                messageInput.value = '';
+                saveMessage(messageJSON);
+            }
+        }
+
+        function appendMessageToChatbox(data) {
+            const messageData = JSON.parse(data);
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+            
+            // Differentiate sender and receiver style
+            messageElement.classList.add(messageData.username === username ? 'receiver' : 'sender');
+
+            const usernameElement = document.createElement('div');
+            usernameElement.classList.add('username');
+            usernameElement.textContent = messageData.username;
+
+            const messageContent = document.createElement('div');
+            messageContent.innerHTML = convertURLsToLinks(messageData.message);
+
+            const timestampElement = document.createElement('div');
+            timestampElement.classList.add('timestamp');
+            timestampElement.textContent = messageData.timestamp;
+
+            messageElement.appendChild(usernameElement);
+            messageElement.appendChild(messageContent);
+            messageElement.appendChild(timestampElement);
+
+            chatbox.appendChild(messageElement);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function convertURLsToLinks(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, (url) => {
+                return `<a href="${url}" target="_blank">${url}</a>`;
+            });
+        }
+
+        function saveMessage(message) {
+            messages.push(message);
+            localStorage.setItem('messages', JSON.stringify(messages));
+        }
+    </script>
+</body>
+</html>

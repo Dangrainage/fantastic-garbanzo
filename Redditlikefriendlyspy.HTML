@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="icon" href="https://dangrain.top/Dangrain.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The universal friend clock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-color: #111;
+            color: #fff;
+        }
+        .time-box {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Universal Friend Clock</h1>
+    <div class="time-box">
+        <h2>Serbia - Dan</h2>
+        <p id="serbia-time">7/5/2024, 12:10:39 PM</p>
+    </div>
+    <div class="time-box">
+        <h2>Rhode Island - DD</h2>
+        <p id="rhodeisland-time">7/5/2024, 6:10:39 AM</p>
+    </div>
+    <div class="time-box">
+        <h2>Missouri - Marcy</h2>
+        <p id="missouri-time">7/5/2024, 5:10:39 AM</p>
+    </div>
+    <div class="time-box">
+        <h2>Illinois - Fop</h2>
+        <p id="illinois-time">7/5/2024, 5:10:39 AM</p>
+    </div>
+    <div class="time-box">
+        <h2>New Jersey - Max</h2>
+        <p id="newjersey-time">7/5/2024, 6:10:39 AM</p>
+    </div>
+    <div class="time-box">
+        <h2>The Netherlands - Aloy</h2>
+        <p id="netherlands-time">7/5/2024, 12:10:39 PM</p>
+    </div>
+    <div class="time-box">
+        <h2>Australia - Scarlet</h2>
+        <p id="aest-time">7/5/2024, 8:10:39 PM</p>
+    </div>
+        <div class="time-box">
+        <h2>Brazil - Yasmina</h2>
+        <p id="brasil-time">7/5/2024, 8:10:39 PM</p>
+    </div>
+
+    <div class="time-box">
+        <h2>California - Lucy</h2>
+        <p id="cali-time">7/5/2024, 8:10:39 PM</p>
+    </div>
+
+
+    <script>
+        function updateTime() {
+            const serbiaTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Belgrade"});
+            const rhodeIslandTime = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+            const missouriTime = new Date().toLocaleString("en-US", {timeZone: "America/Chicago"});
+            const illinoisTime = new Date().toLocaleString("en-US", {timeZone: "America/Chicago"});
+            const newJerseyTime = new Date().toLocaleString("en-US", {timeZone: "America/New_York"});
+            const netherlandsTime = new Date().toLocaleString("en-US", {timeZone: "Europe/Amsterdam"});
+            const aestTime = new Date().toLocaleString("en-US", {timeZone: "Australia/Sydney"});
+            const brasilTime = new Date().toLocaleString("en-US", {timeZone: "America/Sao_Paulo"});
+            const caliTime = new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles"});
+
+            document.getElementById('serbia-time').innerText = serbiaTime;
+            document.getElementById('rhodeisland-time').innerText = rhodeIslandTime;
+            document.getElementById('missouri-time').innerText = missouriTime;
+            document.getElementById('illinois-time').innerText = illinoisTime;
+            document.getElementById('newjersey-time').innerText = newJerseyTime;
+            document.getElementById('netherlands-time').innerText = netherlandsTime;
+            document.getElementById('aest-time').innerText = aestTime;
+            document.getElementById('brasil-time').innerText = brasilTime;
+            document.getElementById('cali-time').innerText = caliTime;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime(); // Initial call to display the time immediately on load
+    </script>
+    <script defer src="./The universal friend clock_files/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"89e68cd7d8bc5bb6","r":1,"version":"2024.4.1","token":"7c3fe666fee9418f9556ba5facdb5a1b"}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"8bdd32b7bce05b54","version":"2024.8.0","r":1,"token":"7c3fe666fee9418f9556ba5facdb5a1b","serverTiming":{"name":{"cfL4":true}}}' crossorigin="anonymous"></script>
+</body>
+</html>
