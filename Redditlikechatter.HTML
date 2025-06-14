@@ -29,7 +29,7 @@
         let username = localStorage.getItem('username') || '';
         usernameInput.value = username;
 
-        const socket = new WebSocket('wss://ws.postman-echo.com/raw');
+        const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=i0otVcwX400TELNXk6GJI7w1GMnhzitmyv1Y0iOf&notify_self=1');
 
         socket.addEventListener('open', () => {
             sendButton.disabled = false;
@@ -92,7 +92,5 @@
             });
         }
     </script>
-    <h1>This worked so far, but It had to have It's websocket replaced every month, since Piesocket works that way.</h1>
-    <h1>I am going to fix this as soon as I replace my Raspberry Pi zero, since this one's WiFi antenna suddenly died</h1>
 </body>
 </html>
