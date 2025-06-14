@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="icon" href="Dangrain.ico" type="image/x-icon">
+    <li><a href="Redditlike.HTML">Home</a></li>
+    <title>Chatroom</title>
+    
+    <style>
+        #chatbox {
+            width: 1080px;
+            height: 720px;
+            border: 10px solid #ccc;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbox"></div>
+    <input type="text" id="username" placeholder="Your Name">
+    <input type="text" id="message" placeholder="Type your message">
+    <button id="send">Send</button>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        const usernameInput = document.getElementById('username');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+
+        let username = localStorage.getItem('username') || '';
+        usernameInput.value = username;
+
+        const socket = new WebSocket('wss://free.blr2.piesocket.com/v3/1?api_key=gyBmNIxpOACNKSbRoLZWYucpBQ5LsYhkf5CqaNBv&notify_self=1');
+
+        socket.addEventListener('open', () => {
+            sendButton.disabled = false;
+        });
+
+        socket.addEventListener('message', event => {
+            const message = event.data;
+            appendMessageToChatbox(message);
+        });
+
+        messageInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+
+        function sendMessage() {
+            username = usernameInput.value;
+            localStorage.setItem('username', username);
+            const message = messageInput.value;
+            
+            if (username.trim() === '' || message.trim() === '') return;
+
+            if (socket.readyState === WebSocket.OPEN) {
+                const data = {
+                    username: username,
+                    message: message
+                };
+
+                socket.send(JSON.stringify(data));
+                messageInput.value = '';
+            }
+        }
+
+        function appendMessageToChatbox(data) {
+            const messageElement = document.createElement('div');
+            const usernameElement = document.createElement('strong');
+            
+            const messageData = JSON.parse(data);
+            
+            usernameElement.textContent = messageData.username + ': ';
+            
+            const messageWithLinks = convertURLsToLinks(messageData.message);
+            const messageContentElement = document.createElement('div');
+            messageContentElement.innerHTML = messageWithLinks;
+            
+            messageElement.appendChild(usernameElement);
+            messageElement.appendChild(messageContentElement);
+
+            chatbox.appendChild(messageElement);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function convertURLsToLinks(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, (url) => {
+                return `<a href="${url}" target="_blank">${url}</a>`;
+            });
+        }
+    </script>
+</body>
+</html>
